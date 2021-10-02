@@ -1,0 +1,6 @@
+womans_color
+COLOR : CMYK
+C 	7993	2920.05 ms	1728.14ms
+M 	1321	1369.26 ms	1643.09ms
+Y 	7947	877.458 ms	1120.81ms
+K 	8723	2899.27 ms	1797.61ms
