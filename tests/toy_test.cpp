@@ -23,56 +23,56 @@ int main() {
     pt = {0.5, 0.5};
     points.push_back(pt);
 
-    KDTree tree(points);
+    // KDTree tree(points);
 
-    std::cout << "nearest test\n";
-    pt = {0.8, 0.2};
-    auto res = tree.nearest_point(pt);
-    for (double b : res) {
-        std::cout << b << " ";
-    }
-    std::cout << '\n';
+    // std::cout << "nearest test\n";
+    // pt = {0.8, 0.2};
+    // auto res = tree.nearest_point(pt);
+    // for (double b : res) {
+    //     std::cout << b << " ";
+    // }
+    // std::cout << '\n';
 
-    /*
-    std::cout << "going down the tree\n";
+    // /*
+    // std::cout << "going down the tree\n";
 
-    for (auto b : point_t(*tree)) {
-        std::cout << b << " ";
-    }
-    std::cout << '\n';
+    // for (auto b : point_t(*tree)) {
+    //     std::cout << b << " ";
+    // }
+    // std::cout << '\n';
 
-    for (auto b : point_t(*tree->left)) {
-        std::cout << b << " ";
-    }
-    std::cout << '\n';
+    // for (auto b : point_t(*tree->left)) {
+    //     std::cout << b << " ";
+    // }
+    // std::cout << '\n';
 
-    for (auto b : point_t(*tree->right)) {
-        std::cout << b << " ";
-    }
-    std::cout << '\n';
+    // for (auto b : point_t(*tree->right)) {
+    //     std::cout << b << " ";
+    // }
+    // std::cout << '\n';
 
-    for (auto b : point_t(*tree->left->left)) {
-        std::cout << b << " ";
-    }
-    std::cout << '\n';
+    // for (auto b : point_t(*tree->left->left)) {
+    //     std::cout << b << " ";
+    // }
+    // std::cout << '\n';
 
-    for (auto b : point_t(*tree->right->left)) {
-        std::cout << b << " ";
-    }
-    std::cout << '\n';
+    // for (auto b : point_t(*tree->right->left)) {
+    //     std::cout << b << " ";
+    // }
+    // std::cout << '\n';
 
-    std::cout << "printing nbh\n";
+    // std::cout << "printing nbh\n";
 
-    pt = {.0, .5};
+    // pt = {.0, .5};
 
-    */
-    auto res2 = tree.neighborhood_points(pt, .55);
+    // */
+    // auto res2 = tree.neighborhood_points(pt, .55);
 
-    for (point_t a : res2) {
-        for (double b : a) {
-            std::cout << b << " ";
-        }
-        std::cout << '\n';
-    }
+    // for (point_t a : res2) {
+    //     for (double b : a) {
+    //         std::cout << b << " ";
+    //     }
+    //     std::cout << '\n';
+    // }
     return 0;
 }
