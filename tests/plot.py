@@ -71,7 +71,7 @@ def draw(fileName, ax, TARGET_SIZE, color_, plot_n=True):
         cnt = 0
         for line in lines:
             if line == "End\n":
-                ax.plot(xs,ys,zs,color=color_,linewidth='0.5')
+                ax.plot(xs,ys,zs,color=color_,linewidth='0.9')
                 plt.ion()
                 plt.draw()
                 xs = []; ys =[]; zs = []
@@ -103,6 +103,7 @@ if __name__ == "__main__":
     ax.set_ylabel('$Y$')
     ax.grid(False)
     SCALE = 0.3 # normal drawing scale
+    NORMAL = False
 
     # plot wall
     surf = Surface()
@@ -112,16 +113,16 @@ if __name__ == "__main__":
 
     # plot drawing - C
     fileName = '../output/normal/bee_hive_2_face_ewha_full_path_c.txt'
-    draw(fileName, ax, SCALE, 'c', True)
+    draw(fileName, ax, SCALE, 'c', NORMAL)
     # plot drawing - M
     fileName = '../output/normal/bee_hive_2_face_ewha_full_path_m.txt'
-    draw(fileName, ax, SCALE, 'm', True)
+    draw(fileName, ax, SCALE, 'm', NORMAL)
     # plot drawing - Y
     fileName = '../output/normal/bee_hive_2_face_ewha_full_path_y.txt'
-    draw(fileName, ax, SCALE, 'y', True)
+    draw(fileName, ax, SCALE, 'y', NORMAL)
     # plot drawing - K
     fileName = '../output/normal/bee_hive_2_face_ewha_full_path_k.txt'
-    draw(fileName, ax, SCALE, 'k', True)
+    draw(fileName, ax, SCALE, 'k', NORMAL)
 
     ax.auto_scale_xyz([-1, 1], [-1.8, 0.2], [0, 2])
     plt.show(block=True)

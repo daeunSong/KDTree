@@ -8,10 +8,12 @@
 #include "KDTree.hpp"
 #include "opencv2/opencv.hpp"
 
-#define TARGET_SIZE 2.5
-#define WALL_OBJ "../input/curved_surface_yz.obj"
-#define DRAWING_TXT "../input/drawing_input_logs/graffiti_pink/final_path/ewha/ewha_full_path_m.txt"
-#define OUTPUT_TXT "../output/normal/curved_surface_ewha_full_path_m.txt"
+#define TARGET_SIZE    1.5
+#define TRANSLATE_LEFT -1.1
+#define TRANSLATE_UP   0.05
+#define WALL_OBJ "../input/bee_hive_2_face.obj"
+#define DRAWING_TXT "../input/drawing_input_logs/graffiti_pink/final_path/ewha/ewha_full_path_c.txt"
+#define OUTPUT_TXT "../output/normal/bee_hive_2_face_ewha_full_path_c.txt"
 
 std::vector<std::string> split(std::string line, char delimiter) {
   std::vector<std::string> answer;
@@ -151,8 +153,8 @@ int main() {
     else{
       line = split(line_, ' ');  // splitted line
       point_t pt;
-      pt.push_back((std::stod(line[0])-0.5)*TARGET_SIZE);  // y
-      pt.push_back((std::stod(line[1]))*TARGET_SIZE); // z
+      pt.push_back((std::stod(line[0])+TRANSLATE_LEFT)*TARGET_SIZE);  // y
+      pt.push_back((std::stod(line[1])*TARGET_SIZE)+TRANSLATE_UP); // z
       // std::cout << "drawing point: " << pt[0] << ", " << pt[1] << std::endl;
 
       // std::cout << "\nNearest 4 points\n";
