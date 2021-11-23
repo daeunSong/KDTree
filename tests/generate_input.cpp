@@ -11,9 +11,9 @@
 #define TARGET_SIZE    1.5
 #define TRANSLATE_LEFT -1.1
 #define TRANSLATE_UP   0.05
-#define WALL_OBJ "../input/bee_hive_2_face.obj"
+#define WALL_OBJ "../input/curved_surface_yz.obj"
 #define DRAWING_TXT "../input/drawing_input_logs/graffiti_pink/final_path/ewha/ewha_full_path_c.txt"
-#define OUTPUT_TXT "../output/normal/bee_hive_2_face_ewha_full_path_c.txt"
+#define OUTPUT_TXT "../output/normal/curved_surface_yz_ewha_full_path_c.txt"
 
 std::vector<std::string> split(std::string line, char delimiter) {
   std::vector<std::string> answer;
@@ -117,10 +117,10 @@ int main() {
   std::cout << "Min and Max Z: " << min_z << " " << max_z << std::endl;
   double mid_y = (max_y+min_y)/2;
   double mid_z = (max_z+min_z)/2;
-  // for(int i = 0; i < points.size(); i++) {
-  //   points[i][1] -= mid_y;
-  //   points[i][2] -= mid_z;
-  // }
+  for(int i = 0; i < points.size(); i++) {
+    points[i][1] -= mid_y;
+    points[i][2] -= mid_z;
+  }
 
   // make KDTree
   std::cout << "Create KD Tree\n";
@@ -166,12 +166,17 @@ int main() {
 
       pointVec coor = {quad[0]->xyz(), quad[1]->xyz(), quad[2]->xyz(), quad[3]->xyz()};
       pointVec nv = {quad[0]->n, quad[1]->n, quad[2]->n, quad[3]->n};
+
+      // for(int i = 0; i < coor.size(); i++){
+      //   std::cout << coor[i][0] << " " << coor[i][1] << " " << coor[i][2] << std::endl;
+      // }
+      // std::cout << std::endl;
           
       // matrix to convert quad to rectangle 
       // cv::Mat h = homographyMat(coor);  // 3X3 matrix
-      // // cv::Mat h_Inv=h.inv();
+      // cv::Mat h_Inv=h.inv();
 
-      // // bilinear interpolation
+      // bilinear interpolation
       // point_t pt_p;
       // for(int i = 0; i < 2; i++){
       //     pt_p.push_back(h.at<double>(i,0)*pt[1]+h.at<double>(i,1)*pt[2]+h.at<double>(i,2));
@@ -193,12 +198,15 @@ int main() {
       double C = (dy)*(dz);
       double D = (1-dy)*(dz);
 
-      // double fy1 = (1-pt_p[0])*coor[0][0] + (pt_p[0])*coor[1][0];
-      // double fy2 = (1-pt_p[0])*coor[3][0] + (pt_p[0])*coor[2][0];
-      // double x = (1-pt_p[1])*fy1 + (pt_p[1])*fy2;
+      double fy1 = (coor[1][1]-pt[0])*coor[0][0] + (pt[0]-coor[0][1])*coor[1][0];
+      fy1 = fy1/(coor[1][1]-coor[0][1]);
+      double fy2 = (coor[1][1]-pt[0])*coor[3][0] + (pt[0]-coor[0][1])*coor[2][0];
+      fy2 = fy2/(coor[1][1]-coor[0][1]);
+      double x = (coor[3][2]-pt[1])*fy1 + (pt[1]-coor[0][2])*fy2;
+      x = x/(coor[3][2]-coor[0][2]);
 
       point_t normal_vector;
-      double x = A*coor[0][0]+B*coor[1][0]+C*coor[2][0]+D*coor[3][0];
+      // double x = A*coor[0][0]+B*coor[1][0]+C*coor[2][0]+D*coor[3][0];
       for(int i = 0; i < 3; i++){
         normal_vector.push_back(A*nv[0][i]+B*nv[1][i]+C*nv[2][i]+D*nv[3][i]);
       }
