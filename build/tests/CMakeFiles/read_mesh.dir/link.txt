@@ -1,0 +1,1 @@
+/usr/bin/g++  -Wall -std=c++14 -O3 -DNDEBUG  -rdynamic CMakeFiles/read_mesh.dir/read_mesh.cpp.o  -o ../bin/read_mesh -Wl,-rpath,/home/daeun/devel/tspArt/KDTree/build/lib ../lib/libKDTree.so 

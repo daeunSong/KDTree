@@ -1,6 +1,0 @@
-university_color
-COLOR : CMYK
-C 	11544	3949.07 ms	2294.13ms
-M 	2131	2025.66 ms	1606.06ms
-Y 	11633	1471.51 ms	1627.17ms
-K 	12575	3976.97 ms	2407.17ms

@@ -1,0 +1,1 @@
+/usr/bin/g++  -Wall -std=c++14 -O3 -DNDEBUG  -rdynamic CMakeFiles/construction_time.dir/construction_time.cpp.o  -o ../bin/construction_time -Wl,-rpath,/home/daeun/devel/tspArt/KDTree/build/lib ../lib/libKDTree.so 

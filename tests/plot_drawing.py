@@ -23,15 +23,15 @@ class Stroke :
 
 class Drawing:
     path = '../input/ewha/'
-    file_name = 'ewha_color_path_'
-    color = 'c'
+    file_name = 'ewha_outline_path_'
+    color = 'k'
     file_extension = '.txt'
     file_name_full = path+file_name+color+file_extension
 
     size = [0.5, 0.5] # width, height
-    target_size = 0.6 # target height
+    target_size = 0.5 # target height
     ratio = size[0]/ size[1] # width / height
-    max_range = 0.35 # splitting range
+    max_range = 0.45 # splitting range
     ranges = []
 
     # drawing
@@ -93,8 +93,8 @@ class Drawing:
             for i in np.arange(1,stroke_.getSize()):
                 coord = stroke_.getPoint(i)
                 dist = np.linalg.norm(coord - coord_prev)
-                if dist > 0.025: ## 3cm
-                    if len(stroke.xs) > 2:
+                if dist > 0.02: ## 3cm
+                    if len(stroke.xs) > 3:
                         new_strokes.append(stroke)
                     stroke = Stroke()
                     stroke.append(coord)
@@ -128,13 +128,15 @@ class Drawing:
             stroke.append(stroke_.getPoint(0))   # first drawing point
             range_index = self.detectRange(stroke_.xs[0])
 
+
             for p in np.arange(1, stroke_.getSize()):
                 coord = stroke_.getPoint(p)
                 i = self.detectRange(coord[0])
                 if range_index != i: # split the stroke
+                    # print(range_index, i)
                     contact = list(set(self.ranges[range_index])-(set(self.ranges[range_index])-set(self.ranges[i])))[0]
                     stroke.append([contact, coord[1]])
-                    if len(stroke.xs) > 2:
+                    if len(stroke.xs) > 3:
                         if range_index not in indices:
                             indices.append(range_index)
                             strokes_by_range.append([stroke])
@@ -161,7 +163,7 @@ class Drawing:
 
     def detectRange (self, val):
         for i, r in enumerate(self.ranges):
-            if r[0] < val < r[1]:
+            if r[0] < val <= r[1]:
                 return i
         return -1
 
@@ -198,15 +200,42 @@ def plot_auto_scale (strokes, ax, dimension='2d'):
         ax.auto_scale_xyz([-1.0, 1.0], [-max, max], [-max, max])
 
 if __name__ == "__main__":
-    draw = Drawing()
+    draw_c = Drawing()
 
-    draw.path = '../input/ewha/'
-    draw.file_name = 'ewha_color_path_'
+    draw_c.path = '../input/ewha/'
+    draw_c.file_name = 'ewha_full_path_'
     # draw.path = '../input/university/'
     # draw.file_name = 'university_color_path_'
-    draw.color = 'c'
+    draw_c.color = 'c'
 
-    draw.readDrawing()
+    draw_c.readDrawing()
+
+    draw_m = Drawing()
+    draw_m.path = '../input/ewha/'
+    draw_m.file_name = 'ewha_full_path_'
+    # draw.path = '../input/university/'
+    # draw.file_name = 'university_color_path_'
+    draw_m.color = 'm'
+
+    draw_m.readDrawing()
+
+    draw_y = Drawing()
+    draw_y.path = '../input/ewha/'
+    draw_y.file_name = 'ewha_full_path_'
+    # draw.path = '../input/university/'
+    # draw.file_name = 'university_color_path_'
+    draw_y.color = 'y'
+
+    draw_y.readDrawing()
+
+    draw_k = Drawing()
+    draw_k.path = '../input/ewha/'
+    draw_k.file_name = 'ewha_full_path_'
+    # draw.path = '../input/university/'
+    # draw.file_name = 'university_color_path_'
+    draw_k.color = 'k'
+
+    draw_k.readDrawing()
 
     # plotting
     fig = plt.figure()
@@ -214,13 +243,19 @@ if __name__ == "__main__":
     ax = fig.add_subplot()
     ax.grid(False)
 
-    plot_strokes(draw.strokes, ax, draw.color)
+    #plot_strokes(draw_c.strokes, ax, draw_c.color)
+    #plot_strokes(draw_m.strokes, ax, draw_m.color)
+    #plot_strokes(draw_y.strokes, ax, draw_y.color)
+    plot_strokes(draw_k.strokes, ax, draw_k.color)
 
-    plot_auto_scale(draw.strokes, ax)
+    plot_auto_scale(draw_c.strokes, ax)
     plt.show(block=False)
 
     ###################################### split long distance
-    draw.splitLongDist()
+    draw_c.splitLongDist()
+    draw_m.splitLongDist()
+    draw_y.splitLongDist()
+    draw_k.splitLongDist()
 
     # plotting
     fig = plt.figure()
@@ -228,27 +263,30 @@ if __name__ == "__main__":
     ax = fig.add_subplot()
     ax.grid(False)
 
-    plot_strokes(draw.strokes, ax, 0)
-    strokesss = draw.strokes
+    #plot_strokes(draw_c.strokes, ax, 0)
+    #plot_strokes(draw_m.strokes, ax, draw_m.color)
+    #plot_strokes(draw_y.strokes, ax, draw_y.color)
+    plot_strokes(draw_k.strokes, ax, 0)
+    # strokesss = draw.strokes
 
-    plot_auto_scale(draw.strokes, ax)
+    plot_auto_scale(draw_c.strokes, ax)
     plt.show(block=False)
 
     ###################################### split by range
-    draw.splitByRange()
-    draw.reCenterDrawings()
+    draw_k.splitByRange()
+    # draw_c.reCenterDrawings()
 
-    # plotting
+    ## plotting
     fig = plt.figure()
     # ax = fig.add_subplot(111, projection="3d")
     ax = fig.add_subplot()
     ax.grid(False)
 
-    for i, strokes in enumerate(draw.strokes_by_range):
+    for i, strokes in enumerate(draw_k.strokes_by_range):
         colors = ['c','m','y','k']
         plot_strokes(strokes, ax, colors[i%len(colors)])
 
-    plot_auto_scale(draw.strokes, ax)
+    plot_auto_scale(draw_k.strokes, ax)
     plt.show(block=False)
 
 

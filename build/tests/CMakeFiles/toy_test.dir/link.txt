@@ -1,0 +1,1 @@
+/usr/bin/g++  -Wall -std=c++14 -O3 -DNDEBUG  -rdynamic CMakeFiles/toy_test.dir/toy_test.cpp.o  -o ../bin/toy_test -Wl,-rpath,/home/daeun/devel/tspArt/KDTree/build/lib ../lib/libKDTree.so 

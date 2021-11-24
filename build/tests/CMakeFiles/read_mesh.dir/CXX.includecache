@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+.././KDTree.hpp
+algorithm
+-
+functional
+-
+memory
+-
+vector
+-
+
+/home/daeun/devel/tspArt/KDTree/tests/read_mesh.cpp
+iostream
+-
+sstream
+-
+fstream
+-
+vector
+-
+string
+-
+KDTree.hpp
+/home/daeun/devel/tspArt/KDTree/tests/KDTree.hpp
+
