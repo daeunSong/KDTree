@@ -3,12 +3,16 @@ import mpl_toolkits.mplot3d as a3
 import numpy as np
 
 class Surface:
-    fileName = '../input/bee_hive_1_face.obj'
+    fileName = '../input/curved_surface_yz.obj'
     faces = []
+    mid_y = 0
+    min_z = 0
 
     def readMesh (self):
         vertices = []
         normals = []
+        min_y = min_z = 1000
+        max_y = max_z = -1000
         try:
             f = open(self.fileName, 'r')
             lines = f.readlines()
@@ -16,6 +20,10 @@ class Surface:
                 line = line.split()
                 if line[0] == 'v': # vertex
                     coord = list(map(float,line[1:]))
+                    min_y = min(min_y, coord[1])
+                    min_z = min(min_z, coord[2])
+                    max_y = max(max_y, coord[1])
+                    max_z = max(max_z, coord[2])
                     vertices.append(coord)
                 elif line[0] == 'vn': # vertex normal
                     coord = list(map(float,line[1:]))
@@ -31,7 +39,12 @@ class Surface:
         except:
             print("Error opening the file")
 
-def plot_faces (faces, ax, plot_normals = True):
+        self.mid_y = (min_y+max_y)/2
+        self.min_z = min_z
+        
+
+def plot_faces (surf, ax, plot_normals = True):
+    faces = surf.faces
     for face in faces:
         face['vertex'].append(face['vertex'][0])
         face['normal'].append(face['normal'][0])
@@ -40,8 +53,8 @@ def plot_faces (faces, ax, plot_normals = True):
             vertex = face['vertex'][i]
             normal = face['normal'][i]
             xs.append(vertex[0])
-            ys.append(vertex[1])
-            zs.append(vertex[2])
+            ys.append(vertex[1] - surf.mid_y)
+            zs.append(vertex[2] - surf.min_z)
             if plot_normals:
                 plot_normal (vertex, normal, ax)
 
@@ -107,22 +120,22 @@ if __name__ == "__main__":
 
     # plot wall
     surf = Surface()
-    surf.fileName = '../input/bee_hive_2_face.obj'
+    surf.fileName = '../input/bee_hive_three.obj'
     surf.readMesh()
-    plot_faces(surf.faces, ax, False)
+    plot_faces(surf, ax, False)
 
     # plot drawing - C
-    fileName = '../output/normal/bee_hive_2_face_ewha_full_path_c.txt'
+    fileName = '../output/normal/bee_hive_three_ewha_full_path_c.txt'
     draw(fileName, ax, SCALE, 'c', NORMAL)
     # plot drawing - M
-    fileName = '../output/normal/bee_hive_2_face_ewha_full_path_m.txt'
-    draw(fileName, ax, SCALE, 'm', NORMAL)
+    #fileName = '../output/normal/bee_hive_2_face_ewha_full_path_m.txt'
+    #draw(fileName, ax, SCALE, 'm', NORMAL)
     # plot drawing - Y
-    fileName = '../output/normal/bee_hive_2_face_ewha_full_path_y.txt'
-    draw(fileName, ax, SCALE, 'y', NORMAL)
+    #fileName = '../output/normal/bee_hive_2_face_ewha_full_path_y.txt'
+    #draw(fileName, ax, SCALE, 'y', NORMAL)
     # plot drawing - K
-    fileName = '../output/normal/bee_hive_2_face_ewha_full_path_k.txt'
-    draw(fileName, ax, SCALE, 'k', NORMAL)
+    #fileName = '../output/normal/bee_hive_2_face_ewha_full_path_k.txt'
+    #draw(fileName, ax, SCALE, 'k', NORMAL)
 
     ax.auto_scale_xyz([-1, 1], [-1.8, 0.2], [0, 2])
     plt.show(block=True)

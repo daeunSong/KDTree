@@ -4,7 +4,7 @@ import numpy as np
 
 
 class Surface:
-    fileName = '../input/bee_hive_1_face.obj'
+    fileName = '../input/bee_hive_three.obj'
     faces = []
 
     def readMesh (self):
@@ -65,7 +65,7 @@ def plot_normal (vertex, normal, ax):
 
 if __name__ == "__main__":
     surf = Surface()
-    surf.fileName = '../input/curved_surface_yz.obj'
+    surf.fileName = '../input/bee_hive.obj'
     surf.readMesh()
 
     # plotting
@@ -93,6 +93,7 @@ if __name__ == "__main__":
     # plot_normal(pt, normal, ax)
 
     # ax.auto_scale_xyz([-1.5, 1.5], [-1.5, 1.5], [0, 3])
+    ax.auto_scale_xyz([-1, 1], [-1.8, 0.2], [0, 2])
     plt.show(block=True)
 
 

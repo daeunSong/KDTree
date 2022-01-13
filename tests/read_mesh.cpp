@@ -105,7 +105,7 @@ int main() {
   double min_y, max_y, min_z, max_z;
 
   // read mesh file
-  std::string file_name = "../input/bee_hive_2_face.obj"; // assume that file is executed in /build folder
+  std::string file_name = "../input/bee_hive_three.obj"; // assume that file is executed in /build folder
   struct stat buffer;   
   if(stat (file_name.c_str(), &buffer) != 0){
     std::cout << "FILE NOT FOUND\n";

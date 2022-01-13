@@ -8,12 +8,11 @@
 #include "KDTree.hpp"
 #include "opencv2/opencv.hpp"
 
-#define TARGET_SIZE    1.5
-#define TRANSLATE_LEFT -1.1
-#define TRANSLATE_UP   0.05
-#define WALL_OBJ "../input/curved_surface_yz.obj"
+#define TARGET_SIZE    0.5
+#define TRANSLATE_UP   0.5
+#define WALL_OBJ "../input/bee_hive_three.obj"
 #define DRAWING_TXT "../input/drawing_input_logs/graffiti_pink/final_path/ewha/ewha_full_path_c.txt"
-#define OUTPUT_TXT "../output/normal/curved_surface_yz_ewha_full_path_c.txt"
+#define OUTPUT_TXT "../output/normal/bee_hive_three_ewha_full_path_c.txt"
 
 std::vector<std::string> split(std::string line, char delimiter) {
   std::vector<std::string> answer;
@@ -94,6 +93,14 @@ std::tuple<pointVec, pointVec, double, double,double,double> readMesh (const std
       }
     }
   }
+
+  // Make y = 0 as the center of the wall coordinate and z = 0 as the bottom of the wall
+  double mid_y = (min_y+max_y)/2;
+  for(int i = 0; i < points.size(); i++){
+    points[i][1] += - mid_y;
+    points[i][2] += - min_z;
+  }
+
   return {points, normals, min_y, max_y, min_z, max_z};
 }
 
@@ -113,14 +120,14 @@ int main() {
   tie(points, normals, min_y, max_y, min_z, max_z) = readMesh(mesh_name);
 
   // transform points so that the wall would have drawings (0,0) coordinate on the middle
-  std::cout << "Min and Max Y: " << min_y << " " << max_y << std::endl;
-  std::cout << "Min and Max Z: " << min_z << " " << max_z << std::endl;
-  double mid_y = (max_y+min_y)/2;
-  double mid_z = (max_z+min_z)/2;
-  for(int i = 0; i < points.size(); i++) {
-    points[i][1] -= mid_y;
-    points[i][2] -= mid_z;
-  }
+  //std::cout << "Min and Max Y: " << min_y << " " << max_y << std::endl;
+  //std::cout << "Min and Max Z: " << min_z << " " << max_z << std::endl;
+  //double mid_y = (max_y+min_y)/2;
+  //double mid_z = (max_z+min_z)/2;
+  //for(int i = 0; i < points.size(); i++) {
+  //  points[i][1] -= mid_y;
+  //  points[i][2] -= mid_z;
+  //}
 
   // make KDTree
   std::cout << "Create KD Tree\n";
@@ -147,14 +154,14 @@ int main() {
   double ratio = std::stod(line[0])/std::stod(line[1]);
   outfile << line_ << "\n";
 
-  std::cout << "Covert Drawing File\n";
+  std::cout << "Convert Drawing File\n";
   while (std::getline(infile, line_)){
     if(line_ == "End") outfile << line_ << "\n";
     else{
       line = split(line_, ' ');  // splitted line
       point_t pt;
-      pt.push_back((std::stod(line[0])+TRANSLATE_LEFT)*TARGET_SIZE);  // y
-      pt.push_back((std::stod(line[1])*TARGET_SIZE)+TRANSLATE_UP); // z
+      pt.push_back((-std::stod(line[0])+0.5)*TARGET_SIZE*ratio);  // y
+      pt.push_back((-std::stod(line[1])+0.5)*TARGET_SIZE+TRANSLATE_UP); // z
       // std::cout << "drawing point: " << pt[0] << ", " << pt[1] << std::endl;
 
       // std::cout << "\nNearest 4 points\n";
@@ -220,9 +227,10 @@ int main() {
         }
         std::cout << std::endl;
       }
-      else
+      else {
       // outfile << std::to_string(x) << " " << line[0] << " " << line[1] << "\n";
         outfile << std::to_string(x) << " " << std::to_string(pt[0]) << " " << std::to_string(pt[1]) << " " << std::to_string(normal_vector[0]) << " " << std::to_string(normal_vector[1]) << " " << std::to_string(normal_vector[2]) <<"\n";
+      }
 
       // std::cout << "normal vector: " << normal_vector[0] << ", " << normal_vector[1] << ", " << normal_vector[2] << std::endl;
       // std::cout << "x: " << x_ << std::endl;
