@@ -46,7 +46,7 @@ def plot_faces (faces, ax, plot_normals = True):
             if plot_normals:
                 plot_normal (vertex, normal, ax)
 
-        ax.plot(xs,ys,zs,color='black',linewidth='0.5')
+        ax.plot(xs,ys,zs,color='gray',linewidth='0.5')
         plt.ion()
         plt.draw()
 
@@ -65,7 +65,8 @@ def plot_normal (vertex, normal, ax):
 
 if __name__ == "__main__":
     surf = Surface()
-    surf.fileName = '../input/bee_hive.obj'
+    #surf.fileName = '../input/bee_hive.obj'
+    surf.fileName = 'obj/curve.obj'
     surf.readMesh()
 
     # plotting
@@ -73,7 +74,9 @@ if __name__ == "__main__":
     ax = fig.add_subplot(111, projection="3d")
     ax.set_xlabel('$X$')
     ax.set_ylabel('$Y$')
-    ax.grid(False)
+    ax.set_zlabel('$Z$')
+    ax.grid(True, color='gray', alpha=0.2)
+    plt.rcParams['grid.color'] = "lightgray"
     SCALE = 0.3 # normal drawing scale
 
     plot_faces(surf.faces, ax, False)
@@ -93,7 +96,10 @@ if __name__ == "__main__":
     # plot_normal(pt, normal, ax)
 
     # ax.auto_scale_xyz([-1.5, 1.5], [-1.5, 1.5], [0, 3])
-    ax.auto_scale_xyz([-1, 1], [-1.8, 0.2], [0, 2])
+    ax.auto_scale_xyz([-0.8, 0.8], [-0.8, 0.8], [-0.8, 0.8])
+    
+    # plt.gca().set_aspect("equal")
+    ax.view_init(elev=30,azim=30)
     plt.show(block=True)
 
 

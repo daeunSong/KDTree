@@ -11,8 +11,8 @@
 #define TARGET_SIZE    0.5
 #define TRANSLATE_UP   0.5
 #define WALL_OBJ "../input/bee_hive_three.obj"
-#define DRAWING_TXT "../input/drawing_input_logs/graffiti_pink/final_path/ewha/ewha_full_path_c.txt"
-#define OUTPUT_TXT "../output/normal/bee_hive_three_ewha_full_path_c.txt"
+#define DRAWING_TXT "../input/hello_world_path_k.txt"
+#define OUTPUT_TXT "../output/normal/bee_hive_three_hello_world_path_k.txt"
 
 std::vector<std::string> split(std::string line, char delimiter) {
   std::vector<std::string> answer;
