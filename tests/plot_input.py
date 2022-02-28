@@ -15,6 +15,7 @@ def draw(fileName, TARGET_SIZE = 0.5, c='black'):
                 plt.plot(xs,ys,color=c,linewidth='0.5')
                 plt.ion()
                 plt.draw()
+                xs = []; ys = []
             else:
                 line = line.split()
                 xs.append((float(line[0])*ratio*TARGET_SIZE))
