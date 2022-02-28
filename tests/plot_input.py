@@ -2,33 +2,40 @@ import matplotlib.pylab as plt
 import mpl_toolkits.mplot3d as a3
 import numpy as np
 
-def draw(fileName, ax, TARGET_SIZE, plot_x=True):
+def draw(fileName, TARGET_SIZE = 0.5, c='black'):
     try:
         f = open(fileName, 'r')
         lines = f.readlines()
         xs = []; ys =[]; zs = []
-        for line in lines:
-            ax.plot(xs,ys,zs,color='black',linewidth='0.5')
-            line = line.split(';')[1].split(',')
-            xs.append((float(line[0])))
-            ys.append((float(line[1])))
-            zs.append((float(line[2])))
-        ax.plot(xs,ys,zs)
+        line = lines[0]
+        line = line.split()
+        ratio = float(line[0])/float(line[1])
+        for line in lines[1:]:
+            if line == "End\n":
+                plt.plot(xs,ys,color=c,linewidth='0.5')
+                plt.ion()
+                plt.draw()
+            else:
+                line = line.split()
+                xs.append((float(line[0])*ratio*TARGET_SIZE))
+                ys.append(-(float(line[1])*TARGET_SIZE))
+        plt.plot(xs,ys,color=c, linewidth='0.5')
     except:
         print("Error opening the file")
 
 if __name__ == "__main__":
-    # fileName = '../output/normal/curved_surface_ewha_full_path_m.txt'
-    fileName = '../input/hello'
+    fileName = '../input/ewha/ewha_full_path_c.txt'
     # plotting
     fig = plt.figure()
-    ax = fig.add_subplot(111, projection="3d")
-    ax.grid(False)
-    SCALE = 0.3 # normal drawing scale
+    TARGET_SIZE = 0.5 # normal drawing scale
 
-    draw(fileName, ax, SCALE)
+    draw('../input/ewha/ewha_full_path_c.txt', TARGET_SIZE, 'c')
+    draw('../input/ewha/ewha_full_path_m.txt', TARGET_SIZE, 'm')
+    draw('../input/ewha/ewha_full_path_y.txt', TARGET_SIZE, 'y')
+    draw('../input/ewha/ewha_full_path_k.txt', TARGET_SIZE, 'k')
 
     # ax.auto_scale_xyz([-3, 3], [-2.5, 2.5], [-1, 4])
+    plt.gca().set_aspect('equal', adjustable='box')
     plt.show(block=True)
 
 

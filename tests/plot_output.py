@@ -32,16 +32,19 @@ def draw(fileName, ax, TARGET_SIZE, plot_x=True):
         print("Error opening the file")
 
 if __name__ == "__main__":
-    fileName = '../output/normal/curved_surface_ewha_full_path_m.txt'
+    fileName = '../output/bee_hive_three_ewha_full_path_c.txt'
     # plotting
-    fig = plt.figure()
+    fig = plt.figure(figsize=[10,8])
     ax = fig.add_subplot(111, projection="3d")
     ax.grid(False)
     SCALE = 0.3 # normal drawing scale
 
     draw(fileName, ax, SCALE)
 
-    # ax.auto_scale_xyz([-3, 3], [-2.5, 2.5], [-1, 4])
+    ax.set_xlim3d(-0.5, 0.5)
+    ax.set_ylim3d(-0.5, 0.5)
+    ax.set_zlim3d(0.5, 1.5)
+    ax.view_init(elev=10., azim=-150)
     plt.show(block=True)
 
 

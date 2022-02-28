@@ -65,7 +65,7 @@ def plot_normal (vertex, normal, ax):
 
 if __name__ == "__main__":
     surf = Surface()
-    surf.fileName = '../input/bee_hive.obj'
+    surf.fileName = '../input/bee_hive_three.obj'
     surf.readMesh()
 
     # plotting

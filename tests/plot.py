@@ -3,7 +3,7 @@ import mpl_toolkits.mplot3d as a3
 import numpy as np
 
 class Surface:
-    fileName = '../input/curved_surface_yz.obj'
+    fileName = '../input/bee_hive_three.obj'
     faces = []
     mid_y = 0
     min_z = 0
@@ -58,7 +58,7 @@ def plot_faces (surf, ax, plot_normals = True):
             if plot_normals:
                 plot_normal (vertex, normal, ax)
 
-        ax.plot(xs,ys,zs,color='black',linewidth='0.1')
+        ax.plot(xs,ys,zs,color='black', alpha=0.5,linewidth='0.1')
         plt.ion()
         plt.draw()
 
@@ -84,7 +84,7 @@ def draw(fileName, ax, TARGET_SIZE, color_, plot_n=True):
         cnt = 0
         for line in lines:
             if line == "End\n":
-                ax.plot(xs,ys,zs,color=color_,linewidth='0.9')
+                ax.plot(xs,ys,zs,color=color_,linewidth='0.5')
                 plt.ion()
                 plt.draw()
                 xs = []; ys =[]; zs = []
@@ -110,7 +110,7 @@ def draw(fileName, ax, TARGET_SIZE, color_, plot_n=True):
 
 if __name__ == "__main__":
     # plotting
-    fig = plt.figure()
+    fig = plt.figure(figsize=[10,8])
     ax = fig.add_subplot(111, projection="3d")
     ax.set_xlabel('$X$')
     ax.set_ylabel('$Y$')
@@ -125,19 +125,23 @@ if __name__ == "__main__":
     plot_faces(surf, ax, False)
 
     # plot drawing - C
-    fileName = '../output/normal/bee_hive_three_ewha_full_path_c.txt'
+    fileName = '../output/bee_hive_three_ewha_full_path_c.txt'
     draw(fileName, ax, SCALE, 'c', NORMAL)
     # plot drawing - M
-    #fileName = '../output/normal/bee_hive_2_face_ewha_full_path_m.txt'
-    #draw(fileName, ax, SCALE, 'm', NORMAL)
+    fileName = '../output/bee_hive_three_ewha_full_path_m.txt'
+    draw(fileName, ax, SCALE, 'm', NORMAL)
     # plot drawing - Y
-    #fileName = '../output/normal/bee_hive_2_face_ewha_full_path_y.txt'
-    #draw(fileName, ax, SCALE, 'y', NORMAL)
+    fileName = '../output/bee_hive_three_ewha_full_path_y.txt'
+    draw(fileName, ax, SCALE, 'y', NORMAL)
     # plot drawing - K
-    #fileName = '../output/normal/bee_hive_2_face_ewha_full_path_k.txt'
-    #draw(fileName, ax, SCALE, 'k', NORMAL)
+    fileName = '../output/bee_hive_three_ewha_full_path_k.txt'
+    draw(fileName, ax, SCALE, 'k', NORMAL)
 
-    ax.auto_scale_xyz([-1, 1], [-1.8, 0.2], [0, 2])
-    plt.show(block=True)
+    # ax.auto_scale_xyz([-1, 1], [-1.8, 0.2], [0, 2])
+    ax.set_xlim3d(-1.2, 1.2)
+    ax.set_ylim3d(-1.2, 1.2)
+    ax.set_zlim3d(-0.2, 2.2)
+    ax.view_init(elev=10., azim=-150)
+    plt.show()
 
 
