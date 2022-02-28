@@ -45,10 +45,10 @@ int main()
 
     std::vector<point_t> points = getListofGeneratedVectors(npoints);
 
-    auto start = std::chrono::high_resolution_clock::now();
-    KDTree tree(points);
-    auto stop = std::chrono::high_resolution_clock::now();
-    auto timespan = std::chrono::duration<double>(stop - start);
-    std::cout << "it took " << timespan.count() << " seconds.";
+    // auto start = std::chrono::high_resolution_clock::now();
+    // KDTree tree(points);
+    // auto stop = std::chrono::high_resolution_clock::now();
+    // auto timespan = std::chrono::duration<double>(stop - start);
+    // std::cout << "it took " << timespan.count() << " seconds.";
     return 0;
 }

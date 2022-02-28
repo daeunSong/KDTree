@@ -19,6 +19,23 @@ make -j4
 ```
 This will generate the executable files in `build/bin` directory. 
 
+
+- Following should be executed in `build` directory:
+```shell
+bin/./generate_input
+```
+Change ```WALL_OBJ```, ```DRAWING_TXT```, ```OUTPUT_TXT``` if you want to test out on different wall and drawing input.\
+The drawing coordinates should be transformed on line 154 to fit the wall. (It will later be altered -- change wall coordinate to fit the drawing)\
+
+
+- Following should be executed in `tests` directory:
+
+```python plot.py```  plots wall and drawing 3d coordinates\
+```python plot_input.py```  plots drawing 2d coordinates\
+```python plot_output.py``` plots drawing 3d coordinates\
+```python plot_wall.py``` plots wall\
+
+
 ## License and copyright
 
 © J. Frederico Carvalho

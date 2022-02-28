@@ -17,23 +17,31 @@
 #include <vector>
 
 using point_t = std::vector< double >;
+using pointVec = std::vector< point_t >;
+
 using indexArr = std::vector< size_t >;
+
 using pointIndex = typename std::pair< std::vector< double >, size_t >;
+using pointIndexArr = typename std::vector< pointIndex >;
+
+using pointNormalIndex = typename std::tuple< double, pointIndex , std::vector< double > >;
+using pointNormalIndexArr = typename std::vector< pointNormalIndex >;
 
 class KDNode {
    public:
     using KDNodePtr = std::shared_ptr< KDNode >;
     size_t index;
-    point_t x;  // vertex
+    point_t yz;
+    double x;  // vertex
     point_t n;  // vertex normal
     KDNodePtr left;
     KDNodePtr right;
 
     // initializer
     KDNode();
-    KDNode(const point_t &, const size_t &, const KDNodePtr &,
-           const KDNodePtr &);
-    KDNode(const pointIndex &, const KDNodePtr &, const KDNodePtr &);
+    KDNode(const point_t &, const double &, const point_t &, const size_t &,
+            const KDNodePtr &, const KDNodePtr &);
+    KDNode(const pointNormalIndex &, const KDNodePtr &, const KDNodePtr &);
     ~KDNode();
 
     // getter
@@ -44,9 +52,12 @@ class KDNode {
     explicit operator point_t();
     explicit operator size_t();
     explicit operator pointIndex();
+
+    point_t xyz();
 };
 
 using KDNodePtr = std::shared_ptr< KDNode >;
+using KDNodeArr = typename std::vector<KDNodePtr>;
 
 KDNodePtr NewKDNodePtr();
 
@@ -63,33 +74,43 @@ class comparer {
    public:
     size_t idx;
     explicit comparer(size_t idx_);
-    inline bool compare_idx(
-        const std::pair< std::vector< double >, size_t > &,  //
-        const std::pair< std::vector< double >, size_t > &   //
+    inline bool compare_idx_n(
+        const pointNormalIndex &,  //
+        const pointNormalIndex &   //
     );
 };
 
-using pointIndexArr = typename std::vector< pointIndex >;
+class comparerD {
+   public:
+    point_t pt;
+    explicit comparerD(point_t pt_);
+    inline bool compare_dist(
+        const KDNodePtr &a,  //
+        const KDNodePtr &b   //
+    );
+};
 
-inline void sort_on_idx(const pointIndexArr::iterator &,  //
-                        const pointIndexArr::iterator &,  //
+inline void sort_on_idx_n(const pointNormalIndexArr::iterator &,  //
+                        const pointNormalIndexArr::iterator &,  //
                         size_t idx);
 
-using pointVec = std::vector< point_t >;
+inline void sort_on_dist(const std::vector<KDNodePtr>::iterator &,  //
+                        const std::vector<KDNodePtr>::iterator &,    //
+                        point_t pt);
+
 
 class KDTree {
     KDNodePtr root;
     KDNodePtr leaf;
 
-    KDNodePtr make_tree(const pointIndexArr::iterator &begin,  //
-                        const pointIndexArr::iterator &end,    //
+    KDNodePtr make_tree_n(const pointNormalIndexArr::iterator &begin,  //
+                        const pointNormalIndexArr::iterator &end,    //
                         const size_t &length,                  //
                         const size_t &level                    //
     );
 
    public:
     KDTree() = default;
-    explicit KDTree(pointVec point_array);
     explicit KDTree(pointVec point_array, pointVec normal_array);
 
    private:
@@ -110,7 +131,7 @@ class KDTree {
     pointIndex nearest_pointIndex(const point_t &pt);
 
    private:
-    pointIndexArr neighborhood_(  //
+    KDNodeArr neighborhood_(  //
         const KDNodePtr &branch,  //
         const point_t &pt,        //
         const double &rad,        //
@@ -118,7 +139,7 @@ class KDTree {
     );
 
    public:
-    pointIndexArr neighborhood(  //
+    KDNodeArr neighborhood(  //
         const point_t &pt,       //
         const double &rad);
 
@@ -129,4 +150,17 @@ class KDTree {
     indexArr neighborhood_indices(  //
         const point_t &pt,          //
         const double &rad);
+
+   private:
+    void print_node_(KDNodePtr &node);
+    void search_quad_(   //
+        const KDNodePtr &branch,  //
+        const point_t &pt,        //
+        const size_t &level,      //
+        KDNodeArr &quad
+    );
+   public:
+    void print_tree();
+    KDNodeArr search_quad(const point_t &pt);
+    KDNodeArr search_quad(const point_t &pt, const double &r);
 };
