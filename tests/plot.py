@@ -76,8 +76,8 @@ def plot_normal (vertex, normal, ax):
 
 def draw(fileName, ax, TARGET_SIZE, color_, plot_n=True):
     try:
-        f = open(fileName, 'r')
-        f_ = open('vector_input/dogs_k.txt','w')
+        f = open('vector_input/prague/'+fileName, 'r')
+        f_ = open('vector_input/prague/converted/'+fileName,'w')
         lines = f.readlines()
         xs = []; ys =[]; zs = []
         ratio = 0.0
@@ -85,34 +85,39 @@ def draw(fileName, ax, TARGET_SIZE, color_, plot_n=True):
         cnt = 0
         x_prev = None
         y_prev = None
-        for line in lines:
+        
+        line = lines[0]
+        line = line.split()
+        width = float(line[0])
+        height = float(line[1])
+        ratio = width/height
+        f_.write(str(width)+" "+str(height)+"\n")
+
+        for line in lines[1:]:
             if line == "#\n":
                 x_prev = None
                 y_prev = None
                 if len(xs) > 2 :
-                    ax.plot(xs,ys,color='black',linewidth='0.9')
+                    ax.plot(xs,ys,color=color_,linewidth='0.9')
                     plt.ion()
                     plt.draw()
                     for i in range(len(xs)):
                         f_.write(str(xs[i]/width)+" "+str(-ys[i]/height)+"\n")
                     f_.write("End\n")
                 xs = []; ys =[]; zs = []
-            elif first_line:
-                line = line.split()
-                ratio = float(line[0])/float(line[1])
-                width = float(line[0])
-                height = float(line[1])
-                first_line = False
-                f_.write(str(float(line[0]))+" "+str(float(line[1]))+"\n")
             else:
                 line = line.split(',')
                 x = float(line[0])
                 y = -float(line[1])
+                #print(x, y)
                 if x_prev != None:
                     dist = (x - x_prev)**2 + (y - y_prev)**2
-                    print(dist)
+                    #print(dist)
                     if (dist > 1000):
-                        ax.plot(xs,ys,color='black',linewidth='0.9')
+                        for i in range(len(xs)):
+                            f_.write(str(xs[i]/width)+" "+str(-ys[i]/height)+"\n")
+                        f_.write("End\n")
+                        ax.plot(xs,ys,color=color_,linewidth='0.9')
                         plt.ion()
                         plt.draw()
                         xs = []; ys =[];
@@ -152,8 +157,12 @@ if __name__ == "__main__":
 
     # plot drawing - C
     # fileName = '../output/normal/bee_hive_three_hello_world_path_k.txt'
-    fileName = 'vector_input/dogs.txt'
-    draw(fileName, ax, SCALE, 'c', NORMAL)
+    # fileName = 'dogs_r.txt'
+    # draw(fileName, ax, SCALE, 'r', NORMAL)
+    # fileName = 'dogs_y.txt'
+    # draw(fileName, ax, SCALE, 'y', NORMAL)
+    fileName = 'prague_k.txt'
+    draw(fileName, ax, SCALE, 'k', NORMAL)
     # plot drawing - M
     #fileName = '../output/normal/bee_hive_2_face_ewha_full_path_m.txt'
     #draw(fileName, ax, SCALE, 'm', NORMAL)
