@@ -24,22 +24,22 @@ using indexArr = std::vector< size_t >;
 using pointIndex = typename std::pair< std::vector< double >, size_t >;
 using pointIndexArr = typename std::vector< pointIndex >;
 
-using pointNormalIndex = typename std::tuple< double, pointIndex , std::vector< double > >;
+using pointNormalIndex = typename std::tuple< pointIndex, pointIndex , std::vector< double > >;
 using pointNormalIndexArr = typename std::vector< pointNormalIndex >;
 
 class KDNode {
    public:
     using KDNodePtr = std::shared_ptr< KDNode >;
     size_t index;
-    point_t yz;
-    double x;  // vertex
+    point_t pt;
+    point_t uv;
     point_t n;  // vertex normal
     KDNodePtr left;
     KDNodePtr right;
 
     // initializer
     KDNode();
-    KDNode(const point_t &, const double &, const point_t &, const size_t &,
+    KDNode(const point_t &, const point_t &, const point_t &, const size_t &,
             const KDNodePtr &, const KDNodePtr &);
     KDNode(const pointNormalIndex &, const KDNodePtr &, const KDNodePtr &);
     ~KDNode();
@@ -111,7 +111,7 @@ class KDTree {
 
    public:
     KDTree() = default;
-    explicit KDTree(pointVec point_array, pointVec normal_array);
+    explicit KDTree(pointVec point_array, pointVec uv_array, pointVec normal_array);
 
    private:
     KDNodePtr nearest_(           //

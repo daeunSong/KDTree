@@ -8,11 +8,11 @@
 #include "KDTree.hpp"
 #include "opencv2/opencv.hpp"
 
-#define TARGET_SIZE    0.5
+#define TARGET_SIZE    0.1
 #define TRANSLATE_UP   1.0
-#define WALL_OBJ "../../input/bee_hive_three.obj"
-#define DRAWING_TXT "../../input/ewha/ewha_full_path_k.txt"
-#define OUTPUT_TXT "../../output/bee_hive_three_ewha_full_path_k.txt"
+#define WALL_OBJ "../../input/half_sphere_out.obj"
+#define DRAWING_TXT "../../input/grid_fix.txt"
+#define OUTPUT_TXT "../../output/grid.txt"
 
 std::vector<std::string> split(std::string line, char delimiter) {
   std::vector<std::string> answer;
@@ -48,21 +48,23 @@ cv::Mat homographyMat(pointVec &pt){
 }
 
 // read the mesh file and save the vertices and vertex normals 1-to-1
-std::tuple<pointVec, pointVec, double, double,double,double> readMesh (const std::string file_name) {
+std::tuple<pointVec, pointVec, double, double,double,double> readMesh (const std::string wall_name) {
   pointVec points;
   pointVec normals;
   pointVec vns;
+  pointVec uvs;
 
   point_t pt;
+  point_t uv;
   point_t n;
 
-  double min_y=1000, max_y=-1000;
-  double min_z=1000, max_z=-1000;
+  double min_y=10000, max_y=-100000;
+  double min_z=10000, max_z=-100000;
 
   bool assigned = false;
 
   // read file
-  std::ifstream infile(file_name);
+  std::ifstream infile(wall_name);
   std::string line_;  // line read
   while (std::getline(infile, line_))
   {
@@ -74,6 +76,10 @@ std::tuple<pointVec, pointVec, double, double,double,double> readMesh (const std
       else if (std::stod(line[2]) > max_y) max_y = std::stod(line[2]);
       if(std::stod(line[3]) < min_z) min_z = std::stod(line[3]);
       else if (std::stod(line[3]) > max_z) max_z = std::stod(line[3]);
+    }
+    else if (line[0] == "vt") { // parameterized vertex (u,v)
+      uv = {std::stod(line[1]), std::stod(line[2]), std::stod(line[3])};
+      uvs.push_back(n);
     }
     else if (line[0] == "vn") { // vertex normal
       n = {std::stod(line[1]), std::stod(line[2]), std::stod(line[3])};
@@ -100,13 +106,11 @@ std::tuple<pointVec, pointVec, double, double,double,double> readMesh (const std
     points[i][1] += - mid_y;
     points[i][2] += - min_z;
   }
-
-  return {points, normals, min_y, max_y, min_z, max_z};
+  return {points, uvs, normals, min_y, max_y, min_z, max_z};
 }
 
 int main() {
-  pointVec points;
-  pointVec normals;
+  pointVec points, uvs, normals;
   double min_y, max_y, min_z, max_z;
 
   // read mesh file
@@ -117,7 +121,7 @@ int main() {
     return 0;
   };
 
-  tie(points, normals, min_y, max_y, min_z, max_z) = readMesh(mesh_name);
+  tie(points, uvs normals, min_y, max_y, min_z, max_z) = readMesh(mesh_name);
 
   // transform points so that the wall would have drawings (0,0) coordinate on the middle
   //std::cout << "Min and Max Y: " << min_y << " " << max_y << std::endl;
@@ -131,7 +135,7 @@ int main() {
 
   // make KDTree
   std::cout << "Create KD Tree\n";
-  KDTree tree(points, normals);
+  KDTree tree(points, uvs, normals);
 
   // tree.print_tree();
 
@@ -160,45 +164,24 @@ int main() {
     else{
       line = split(line_, ' ');  // splitted line
       point_t pt;
-      pt.push_back((-std::stod(line[0])+0.5)*TARGET_SIZE*ratio);  // y
-      pt.push_back((-std::stod(line[1])+0.5)*TARGET_SIZE+TRANSLATE_UP); // z
+      pt.push_back(std::stod(line[0]*0.5+0.25);  // y
+      pt.push_back(std::stod(line[1]*0.5+0.25); // z
       // std::cout << "drawing point: " << pt[0] << ", " << pt[1] << std::endl;
 
+      // find the nearest point
+      auto quad = tree.
+
+
+      /*
       // std::cout << "\nNearest 4 points\n";
       auto quad = tree.search_quad(pt, 3);
-      // for (auto a : quad) {
-      //   point_t pt = a->xyz();
-      //   std::cout << pt[0] << ", " << pt[1] << ", " << pt[2]<< '\n';
-      // }
 
       pointVec coor = {quad[0]->xyz(), quad[1]->xyz(), quad[2]->xyz(), quad[3]->xyz()};
+      pointVec uv = {quad[0]->uv(), quad[1]->uv(), quad[2]->uv(), quad[3]->uv()};
       pointVec nv = {quad[0]->n, quad[1]->n, quad[2]->n, quad[3]->n};
 
-      // for(int i = 0; i < coor.size(); i++){
-      //   std::cout << coor[i][0] << " " << coor[i][1] << " " << coor[i][2] << std::endl;
-      // }
-      // std::cout << std::endl;
-          
-      // matrix to convert quad to rectangle 
-      // cv::Mat h = homographyMat(coor);  // 3X3 matrix
-      // cv::Mat h_Inv=h.inv();
-
-      // bilinear interpolation
-      // point_t pt_p;
-      // for(int i = 0; i < 2; i++){
-      //     pt_p.push_back(h.at<double>(i,0)*pt[1]+h.at<double>(i,1)*pt[2]+h.at<double>(i,2));
-      // }
-
-      // double dy = 1-pt_p[0];
-      // double dz = 1-pt_p[1];
-
-      double dy = coor[1][1]-pt[0];
-      double dz = coor[2][2]-pt[1];
-
-      // double A = dy*(1-dz);
-      // double B = (1-dy)*(1-dz);
-      // double C = (1-dy)*(dz);
-      // double D = dy*(dz);
+      double dy = uv[1][1]-pt[0];
+      double dz = uv[2][2]-pt[1];
 
       double A = (1-dy)*(1-dz);
       double B = dy*(1-dz);
@@ -217,6 +200,9 @@ int main() {
       for(int i = 0; i < 3; i++){
         normal_vector.push_back(A*nv[0][i]+B*nv[1][i]+C*nv[2][i]+D*nv[3][i]);
       }
+      */
+
+
 
       if(x < -1.5){
         std::cout << "point: " << x << " " << pt[0] << " " << pt[1] << std::endl;

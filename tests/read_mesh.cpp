@@ -55,8 +55,10 @@ std::tuple<pointVec, pointVec, double, double,double,double> readMesh (const std
   pointVec points;
   pointVec normals;
   pointVec vns;
+  pointVec uvs;
 
   point_t pt;
+  point_t uv;
   point_t n;
 
   double min_y=10000, max_y=-100000;
@@ -65,7 +67,7 @@ std::tuple<pointVec, pointVec, double, double,double,double> readMesh (const std
   bool assigned = false;
 
   // read file
-  std::ifstream infile(file_name);
+  std::ifstream infile(ros::package::getPath("large_scale_drawing")+this->wall_name);
   std::string line_;  // line read
   while (std::getline(infile, line_))
   {
@@ -77,6 +79,10 @@ std::tuple<pointVec, pointVec, double, double,double,double> readMesh (const std
       else if (std::stod(line[2]) > max_y) max_y = std::stod(line[2]);
       if(std::stod(line[3]) < min_z) min_z = std::stod(line[3]);
       else if (std::stod(line[3]) > max_z) max_z = std::stod(line[3]);
+    }
+    else if (line[0] == "vt") { // parameterized vertex (u,v)
+      uv = {std::stod(line[1]), std::stod(line[2]), std::stod(line[3])};
+      uvs.push_back(n);
     }
     else if (line[0] == "vn") { // vertex normal
       n = {std::stod(line[1]), std::stod(line[2]), std::stod(line[3])};
@@ -96,11 +102,19 @@ std::tuple<pointVec, pointVec, double, double,double,double> readMesh (const std
       }
     }
   }
-  return {points, normals, min_y, max_y, min_z, max_z};
+
+  // Make y = 0 as the center of the wall coordinate and z = 0 as the bottom of the wall
+  double mid_y = (min_y+max_y)/2;
+  for(int i = 0; i < points.size(); i++){
+    points[i][1] += - mid_y;
+    points[i][2] += - min_z;
+  }
+  return {points, uvs, normals, min_y, max_y, min_z, max_z};
 }
 
 int main() {
   pointVec points;
+  pointVec uvs;
   pointVec normals;
   double min_y, max_y, min_z, max_z;
 
@@ -112,7 +126,7 @@ int main() {
     return 0;
   };
 
-  tie(points, normals, min_y, max_y, min_z, max_z) = readMesh(file_name);
+  tie(points, uvs, normals, min_y, max_y, min_z, max_z) = readMesh(file_name);
 
   // transform points so that the wall would have drawings (0,0) coordinate on the middle
   std::cout << "Min and Max Y: " << min_y << " " << max_y << std::endl;
@@ -125,7 +139,7 @@ int main() {
   // }
 
   // make KDTree
-  KDTree tree(points, normals);
+  KDTree tree(points, uvs, normals);
 
   // print out the points and normals
   // for (size_t i = 0 ; i < points.size() ; i ++) {
