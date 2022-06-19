@@ -22,8 +22,9 @@ def draw(fileName, TARGET_SIZE = 0.5, c='black'):
             xs.append((float(line[1])-0.25)*2)
             ys.append((float(line[2])-0.25)*2)
             prev_stroke_num = stroke_num
-            w.write(str((float(line[0])-0.25)*2)+" "+str((float(line[1])-0.25)*2)+"\n")
+            w.write(str((float(line[1])-0.25)*2)+" "+str((float(line[2])-0.25)*2)+"\n")
         plt.plot(xs,ys,color=c, linewidth='0.5')
+        w.write('End\n')
         w.close()
         f.close()
     except:
